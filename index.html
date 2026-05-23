@@ -6,19 +6,42 @@
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#f7f8fa;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
 .sub{color:var(--mut);font-size:12px;margin-bottom:8px;max-width:1000px}
-.topnav{display:flex;gap:6px;padding:4px 22px 0;flex-wrap:wrap}
+.topnav{display:flex;gap:6px;padding:4px 22px 0;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:40;background:#f7f8fa}
+.topnav button{flex:0 0 auto}
 .topnav button{font-size:13px;font-weight:bold;border:1px solid var(--line);background:#fff;border-radius:8px 8px 0 0;padding:8px 16px;cursor:pointer;border-bottom:none}
 .topnav button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 22px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 22px;position:sticky;top:40px;z-index:30;background:#f7f8fa}
 .tab{border:1px solid var(--line);background:#fff;border-radius:18px;padding:6px 14px;cursor:pointer;font-size:13px}
 .tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .legend{display:flex;gap:14px;align-items:center;margin-left:auto;font-size:12px;color:var(--mut);flex-wrap:wrap}
 .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.12)}
 .toggle{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 10px;cursor:pointer}
 .toggle.primary{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:bold}
-#colorBtn,#aiBtn,#myHiBtn{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+.vsep{width:1px;align-self:stretch;min-height:26px;background:var(--line);margin:0 2px}
+.vopts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.optl{font-size:10px;font-weight:bold;color:var(--mut);letter-spacing:.05em}
+.zoomwrap{display:inline-flex;gap:4px}
+.zoomwrap button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:6px;font-size:17px;line-height:1;cursor:pointer;color:var(--ink)}
+.seg{display:inline-flex;align-items:center;border:1px solid #c7d2fe;border-radius:8px;overflow:hidden;background:#eef2ff}
+.seg .segl{font-size:10px;font-weight:bold;color:#3730a3;padding:0 8px;letter-spacing:.05em}
+.seg button{border:0;background:transparent;font-size:12px;padding:6px 12px;cursor:pointer;color:#3730a3}
+.seg button.on{background:var(--ink);color:#fff}
+.hchip{display:inline-flex;align-items:center;gap:5px;background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:bold;cursor:pointer;transition:background .12s,color .12s,border-color .12s}
+#aiBtn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+#myHiBtn.active{background:var(--sel);color:#1f2933;border-color:var(--sel)}
+.dd{position:relative;display:inline-block}
+.ddbtn{background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:bold;cursor:pointer}
+.ddbtn.act{border-color:var(--sel);box-shadow:0 0 0 2px rgba(245,159,0,.35)}
+.ddmenu{position:absolute;top:calc(100% + 5px);left:0;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.16);padding:8px 12px 12px;display:none;z-index:50;min-width:210px}
+.ddmenu.open{display:block}
+.ddsec{font-size:10px;font-weight:bold;color:var(--mut);letter-spacing:.05em;margin:10px 2px 5px}.ddsec.first{margin-top:2px}
+.ddrow{display:flex;align-items:center;gap:8px;padding:6px 2px;font-size:13px;cursor:pointer}
+.ddrow input{width:16px;height:16px;cursor:pointer;accent-color:#f59f00}
 #wrap{margin:0 14px 30px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-#chart{position:relative;overflow-x:auto}
+#chart{position:relative;overflow-x:auto;overflow-y:hidden;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#chart::-webkit-scrollbar{height:0}
+#hscroll{position:fixed;left:0;right:0;bottom:0;height:16px;overflow-x:auto;overflow-y:hidden;z-index:45;background:rgba(247,248,250,.97);border-top:1px solid var(--line);display:none}
+#hscrollInner{height:1px}
 .axis{position:sticky;top:0;height:26px;background:#fff;border-bottom:1px solid var(--line);z-index:5}
 .gl{position:absolute;top:0;border-left:1px solid #eef0f2}
 .gll{position:absolute;top:5px;font-size:11px;color:var(--mut);transform:translateX(4px)}
@@ -29,10 +52,12 @@ header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
 .row:hover .bar{filter:brightness(0.92)}
 #tip{position:fixed;z-index:60;max-width:340px;background:#111827;color:#fff;padding:9px 11px;border-radius:8px;font-size:12px;line-height:1.45;pointer-events:none;opacity:0;transition:opacity .08s;box-shadow:0 6px 24px rgba(0,0,0,.25)}
 #tip .k{color:#9ca3af}#tip .go{color:#ffd8a8}
+@media (hover:none){#tip{display:none!important}}
 .cnt{font-size:12px;color:var(--mut);padding:8px 22px 0}
 #drawer{position:fixed;top:0;right:0;width:380px;max-width:92vw;height:100%;background:#fff;border-left:1px solid var(--line);box-shadow:-8px 0 30px rgba(0,0,0,.12);transform:translateX(100%);transition:transform .2s;z-index:70;display:flex;flex-direction:column}
 #drawer.open{transform:none}
-.dh{padding:14px 16px;border-bottom:1px solid var(--line)}
+.dh{padding:14px 16px;border-bottom:1px solid var(--line);position:relative}
+#closeDrawer{position:absolute;top:10px;right:12px;border:0;background:0;font-size:20px;line-height:1;cursor:pointer;color:var(--mut)}
 .dh h2{margin:0 0 6px;font-size:16px}
 .stat{display:flex;gap:14px;font-size:12px;color:var(--mut);flex-wrap:wrap}
 .stat b{color:var(--ink)}
@@ -73,7 +98,7 @@ header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
 .vbar .lvl.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .vbar .vhint{font-size:11px;color:var(--mut);margin-left:auto}
 .vmain{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
-.vplan{flex:1 1 560px;min-width:320px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px;position:sticky;top:8px}
+.vplan{flex:1 1 560px;min-width:320px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px;position:sticky;top:52px}
 .vplan img{width:100%;display:block;border-radius:6px}
 .vimgwrap{position:relative}
 #vmark{position:absolute;display:none;pointer-events:none;z-index:3;border:3px solid #f59f00;border-radius:4px;background:rgba(245,159,0,.20);box-shadow:0 0 0 2px rgba(255,255,255,.65),0 0 14px rgba(245,159,0,.6)}
@@ -92,13 +117,17 @@ header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
 #myhead{padding:10px 22px 0}.mlegend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);padding:4px 22px 6px}
 .mlegend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.12)}
 .mday{margin:14px}.mday h2{font-size:15px;margin:0 0 6px}
-.mchart{position:relative;border:1px solid var(--line);border-radius:8px;overflow-x:auto;background:#fff}
+.mchart{position:relative;border:1px solid var(--line);border-radius:8px;overflow-x:auto;overflow-y:hidden;max-width:100%;-webkit-overflow-scrolling:touch;background:#fff}
 .mlist{margin:6px 14px 30px}.mlist .dday{margin-left:0}.mlist .it{cursor:pointer}
 .mempty{color:var(--mut);font-size:13px;padding:24px}
-@media print{.controls,.fab,#drawer,.topnav,.vbar,#myExport{display:none}}
+.tab .lblS{display:none}
+.zoomwrap{display:inline-flex;gap:4px}
+@media (max-width:600px){.legend{display:none}.tab .lblF{display:none}.tab .lblS{display:inline}.mbtns{flex-direction:column}.mbtns button,.mbtns a{width:100%;text-align:center}.sub{font-size:11px}.controls{padding:8px 12px}}
+@media (hover:none){#chart .bar{height:24px}#chart .bar span{line-height:24px;font-size:12px}}
+@media print{.controls,.fab,#drawer,.topnav,.vbar,#myExport,#hscroll{display:none}}
 </style></head><body>
 <header><h1>AIA26 PLANNER (by Esteban Reichberg)</h1>
-<div class=sub>Plan your days on the Gantt, build a personal schedule, and see where each session is on the SDCC floor plans. Source: conferenceonarchitecture.com/schedule + official SDCC floor plans. Captured 22 May 2026; non-credit end times are estimated.</div></header>
+<div class=sub>Plan your days, build a custom schedule, and see where each session is located.</div></header>
 <div class=topnav>
   <button class=on data-view=planner>CONF SCHED</button>
   <button data-view=myg>MY SCHED</button>
@@ -107,9 +136,23 @@ header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
 <div id=planner>
  <div class=controls>
  <div id=tabs></div>
- <button class=toggle id=colorBtn>COLOR: by program</button>
- <button class=toggle id=aiBtn>HIGHLIGHT AI: off</button>
- <button class=toggle id=myHiBtn>HIGHLIGHT MY SCHEDULE: off</button>
+ <span class=zoomwrap><button id=zoomOut title="Zoom out">−</button><button id=zoomIn title="Zoom in">+</button></span>
+ <span class=vsep></span>
+ <div class=dd>
+  <button class=ddbtn id=viewBtn>Color: program ▾</button>
+  <div class=ddmenu id=viewMenu>
+   <div class="ddsec first">COLOR BARS BY</div>
+   <div class=seg id=colorSeg><button data-m=type class=on>program</button><button data-m=cost>cost</button></div>
+  </div>
+ </div>
+ <div class=dd>
+  <button class=ddbtn id=hiBtn>Highlight ▾</button>
+  <div class=ddmenu id=hiMenu>
+   <div class="ddsec first">HIGHLIGHT (dim the rest)</div>
+   <label class=ddrow><input type=checkbox id=aiChk><span>★ AI sessions</span></label>
+   <label class=ddrow><input type=checkbox id=myChk><span>✓ My Schedule picks</span></label>
+  </div>
+ </div>
  <button class="toggle primary" id=openDrawer>★ My Schedule (0)</button>
  <div class=legend id=legend></div>
  </div>
@@ -134,13 +177,13 @@ header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
  </div>
 </div>
 <button class=fab id=fab>My Schedule (0)</button>
+<div id=hscroll><div id=hscrollInner></div></div>
 <div id=tip></div>
 <div id=drawer>
- <div class=dh><h2>My Schedule</h2><div class=stat id=stat></div>
+ <div class=dh><button id=closeDrawer aria-label=Close title=Close>✕</button><h2>My Schedule</h2><div class=stat id=stat></div>
   <div class=dbtns>
     <button id=icsBtn>Export .ics</button><button id=csvBtn>Export .csv</button><button id=ganttBtn>Export Gantt</button>
     <button id=printBtn>Print</button><button class=x id=clearBtn>Clear all</button>
-    <button id=closeDrawer style="margin-left:6px">Close ✕</button>
   </div></div>
  <div id=list></div>
 </div>
@@ -151,14 +194,25 @@ const COST={inc:['Included in full pass','#2E6FB0'],extra:['Additional fee','#E8
 const CATMAP={Keynote:'Keynotes & Architalks',Architalk:'Keynotes & Architalks',Seminar:'Seminars',Workshop:'Workshops',Symposium:'Symposia',Tour:'Tours','Expo credit':'Expo credit',Event:'Events',Other:'Other'};
 const TYPE={'Expo credit':'#B1469F','Keynotes & Architalks':'#637496','Seminars':'#4C7A3B','Tours':'#EF4135','Events':'#C79A21','Workshops':'#ADD9DB','Symposia':'#60CFE8','Other':'#9aa0a6'};
 const byId={}; DATA.forEach(r=>byId[r.eid]=r);
-let day=0, mode='type', aiOnly=false, myOnly=false;
+const SHORT=['Wed 10','Thu 11','Fri 12','Sat 13'];const TOUCH=!!(window.matchMedia&&matchMedia('(hover:none)').matches);
+let day=0, mode='type', aiOnly=false, myOnly=false, zoom=(TOUCH?0.7:1);
 let sel=new Set(); try{sel=new Set(JSON.parse(localStorage.getItem('aia_mysched')||'[]'))}catch(e){}
 function save(){localStorage.setItem('aia_mysched',JSON.stringify([...sel]))}
 const chart=document.getElementById('chart'), tip=document.getElementById('tip'), tabs=document.getElementById('tabs');
-DAYS.forEach((d,i)=>{const b=document.createElement('button');b.className='tab'+(i==0?' on':'');b.textContent=d;b.onclick=()=>{day=i;[...tabs.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');render()};tabs.appendChild(b)});
-document.getElementById('colorBtn').onclick=function(){mode=mode=='type'?'cost':'type';this.textContent='COLOR: by '+(mode=='type'?'program':'cost');render()};
-document.getElementById('aiBtn').onclick=function(){aiOnly=!aiOnly;this.textContent='HIGHLIGHT AI: '+(aiOnly?'on':'off');render()};
-document.getElementById('myHiBtn').onclick=function(){myOnly=!myOnly;this.textContent='HIGHLIGHT MY SCHEDULE: '+(myOnly?'on':'off');render()};
+DAYS.forEach((d,i)=>{const b=document.createElement('button');b.className='tab'+(i==0?' on':'');b.innerHTML='<span class=lblF>'+d+'</span><span class=lblS>'+SHORT[i]+'</span>';b.onclick=()=>{day=i;[...tabs.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');render()};tabs.appendChild(b)});
+document.querySelectorAll('#colorSeg button').forEach(b=>b.onclick=function(){mode=this.dataset.m;document.querySelectorAll('#colorSeg button').forEach(x=>x.classList.toggle('on',x===this));document.getElementById('viewBtn').textContent='Color: '+(mode=='type'?'program':'cost')+' ▾';render()});
+document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(0.4,Math.round((zoom-0.15)*100)/100);render()};
+document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(2,Math.round((zoom+0.15)*100)/100);render()};
+const viewBtn=document.getElementById('viewBtn'),viewMenu=document.getElementById('viewMenu');
+const hiBtn=document.getElementById('hiBtn'),hiMenu=document.getElementById('hiMenu');
+viewBtn.onclick=(e)=>{e.stopPropagation();hiMenu.classList.remove('open');viewMenu.classList.toggle('open')};
+hiBtn.onclick=(e)=>{e.stopPropagation();viewMenu.classList.remove('open');hiMenu.classList.toggle('open')};
+viewMenu.onclick=(e)=>e.stopPropagation();
+hiMenu.onclick=(e)=>e.stopPropagation();
+document.addEventListener('click',()=>{viewMenu.classList.remove('open');hiMenu.classList.remove('open')});
+function syncHiBtn(){hiBtn.classList.toggle('act',aiOnly||myOnly)}
+document.getElementById('aiChk').onchange=function(){aiOnly=this.checked;syncHiBtn();render()};
+document.getElementById('myChk').onchange=function(){myOnly=this.checked;syncHiBtn();render()};
 document.querySelectorAll('.topnav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.topnav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
   const v=b.dataset.view;
@@ -167,6 +221,7 @@ document.querySelectorAll('.topnav button').forEach(b=>b.onclick=()=>{
   document.getElementById('venue').style.display=v=='venue'?'':'none';
   document.getElementById('fab').style.display=v=='planner'?'':'none';
   if(v=='myg')renderMy();
+  updateHScroll();
 });
 const drawer=document.getElementById('drawer');
 document.getElementById('openDrawer').onclick=()=>drawer.classList.toggle('open');
@@ -200,8 +255,8 @@ function render(){
  let rows=DATA.filter(r=>r.d==day).sort((a,b)=>a.s-b.s||a.e-b.e||a.t.localeCompare(b.t));
  const minS=Math.min(...rows.map(r=>r.s)), maxE=Math.max(...rows.map(r=>r.e));
  const startH=Math.floor(minS/60), endH=Math.ceil(maxE/60);
- const pxPerMin=2.4, W=(endH-startH)*60*pxPerMin, rh=24, top=30, H=top+rows.length*rh+16;
- chart.style.minWidth=(W+40)+'px'; chart.style.height=H+'px'; chart.innerHTML='';
+ const pxPerMin=2.4*zoom, W=(endH-startH)*60*pxPerMin, rh=(TOUCH?28:24), top=30, H=top+rows.length*rh+16;
+ chart.style.width=(W+40)+'px'; chart.style.height=H+'px'; chart.innerHTML='';
  const axis=document.createElement('div');axis.className='axis';axis.style.width=(W+40)+'px';
  for(let h=startH;h<=endH;h++){const x=(h-startH)*60*pxPerMin;
    const gl=document.createElement('div');gl.className='gl';gl.style.left=x+'px';gl.style.height=H+'px';chart.appendChild(gl);
@@ -225,6 +280,7 @@ function render(){
  document.getElementById('cnt').textContent=rows.length+' sessions · '+DAYS[day]+', 2026 — '+ex+' with an additional fee, '+fr+' free/ticketed, '+(rows.length-ex-fr)+' included in full pass · ★ '+ac+' AI sessions';
  const lg=mode=='type'?['Keynotes & Architalks','Seminars','Workshops','Symposia','Tours','Expo credit','Events'].map(k=>[k,TYPE[k]]):Object.values(COST);
  document.getElementById('legend').innerHTML=lg.map(([k,v])=>'<span><span class=sw style="background:'+v+'"></span>'+k+'</span>').join('')+'<span><span class=sw style="background:#fff;outline:2px solid #111827;outline-offset:-2px"></span>★ AI</span><span><span class=sw style="background:#fff;outline:3px solid #f59f00;outline-offset:-2px"></span>✓ selected</span>';
+ updateHScroll();
 }
 function money(f){const m=/\$([\d,]+)/.exec(f||'');return m?parseInt(m[1].replace(/,/g,'')):0}
 function drawList(){
@@ -302,7 +358,7 @@ function exportGantt(){
  const items=[...sel].map(e=>byId[e]).filter(Boolean);
  if(!items.length){alert('Select some sessions first.');return}
  const totCH=items.reduce((a,r)=>a+(parseFloat(r.ch)||0),0);const totFee=items.reduce((a,r)=>a+money(r.fee),0);
- const css='*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#1f2933;background:#f7f8fa;padding:18px 22px;-webkit-print-color-adjust:exact;print-color-adjust:exact}h1{font-size:20px;margin:0 0 4px}.meta{color:#6b7280;font-size:12px;margin-bottom:10px}.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#6b7280;margin-bottom:8px}.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.12)}.mday{margin:14px 0}.mday h2{font-size:15px;margin:0 0 6px}.mchart{position:relative;border:1px solid #e5e7eb;border-radius:8px;overflow-x:auto;background:#fff}.gl{position:absolute;top:0;border-left:1px solid #eef0f2}.gll{position:absolute;top:5px;font-size:11px;color:#6b7280;transform:translateX(4px)}.bar{position:absolute;height:19px;border-radius:3px;overflow:hidden;white-space:nowrap;font-size:11px;line-height:19px;padding:0 6px}.bar.ai{outline:2px solid #111827;outline-offset:-1px}.mlist{margin:8px 0 0}.dday{font-size:12px;font-weight:bold;color:#6b7280;margin:12px 0 4px;text-transform:uppercase;letter-spacing:.03em}.it{border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;margin:6px 0}.it .tt{font-size:13px;font-weight:bold}.it .mt{font-size:11px;color:#6b7280;margin-top:2px}.foot{color:#9ca3af;font-size:11px;margin-top:18px}@media print{body{background:#fff}.mchart{overflow:visible}}';
+ const css='*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#1f2933;background:#f7f8fa;padding:18px 22px;-webkit-print-color-adjust:exact;print-color-adjust:exact}h1{font-size:20px;margin:0 0 4px}.meta{color:#6b7280;font-size:12px;margin-bottom:10px}.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#6b7280;margin-bottom:8px}.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.12)}.mday{margin:14px 0}.mday h2{font-size:15px;margin:0 0 6px}.mchart{position:relative;border:1px solid #e5e7eb;border-radius:8px;overflow-x:auto;overflow-y:hidden;max-width:100%;-webkit-overflow-scrolling:touch;background:#fff}.gl{position:absolute;top:0;border-left:1px solid #eef0f2}.gll{position:absolute;top:5px;font-size:11px;color:#6b7280;transform:translateX(4px)}.bar{position:absolute;height:19px;border-radius:3px;overflow:hidden;white-space:nowrap;font-size:11px;line-height:19px;padding:0 6px}.bar.ai{outline:2px solid #111827;outline-offset:-1px}.mlist{margin:8px 0 0}.dday{font-size:12px;font-weight:bold;color:#6b7280;margin:12px 0 4px;text-transform:uppercase;letter-spacing:.03em}.it{border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;margin:6px 0}.it .tt{font-size:13px;font-weight:bold}.it .mt{font-size:11px;color:#6b7280;margin-top:2px}.foot{color:#9ca3af;font-size:11px;margin-top:18px}@media print{body{background:#fff}.mchart{overflow:visible}}';
  const meta=items.length+' sessions · '+totCH.toFixed(2)+' CE/LU hrs · add-on cost $'+totFee.toLocaleString()+' · generated '+new Date().toLocaleString();
  const doc='<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>My AIA26 Schedule — Gantt</title><style>'+css+'</style></head><body><h1>My AIA26 Schedule</h1><div class=meta>'+esc(meta)+'</div><div class=legend>'+legendHTML()+'</div>'+myGanttBody(items)+'<div class=foot>Times in San Diego (Pacific). Colors match the AIA26 program-type key. ★ = AI session. Generated from the AIA26 planner.</div></body></html>';
  dl('AIA26_My_Schedule_Gantt.html','text/html;charset=utf-8',doc);
@@ -360,5 +416,10 @@ function selectRoom(room){
 document.getElementById('vsearch').oninput=function(){const q=this.value.toLowerCase();document.querySelectorAll('.rchip').forEach(c=>{c.style.display=c.dataset.room.toLowerCase().includes(q)?'':'none'})};
 function gotoVenue(eid){const r=byId[eid];closeModal();document.querySelector('.topnav button[data-view=venue]').click();if(r.room)selectRoom(r.room);window.scrollTo(0,0)}
 setLvl('upper');buildVenue();
+const hs=document.getElementById('hscroll'),hsi=document.getElementById('hscrollInner');let _hsync=false;
+function updateHScroll(){const pv=document.getElementById('planner').style.display!=='none';if(pv&&chart.scrollWidth>chart.clientWidth+2){hsi.style.width=chart.scrollWidth+'px';hs.style.display='block';hs.scrollLeft=chart.scrollLeft;}else{hs.style.display='none';}}
+chart.addEventListener('scroll',()=>{if(_hsync)return;_hsync=true;hs.scrollLeft=chart.scrollLeft;_hsync=false;});
+hs.addEventListener('scroll',()=>{if(_hsync)return;_hsync=true;chart.scrollLeft=hs.scrollLeft;_hsync=false;});
+window.addEventListener('resize',()=>updateHScroll());
 render();drawList();updateCounts();
 </script></body></html>
