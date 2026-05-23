@@ -37,6 +37,8 @@ header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
 .ddsec{font-size:10px;font-weight:bold;color:var(--mut);letter-spacing:.05em;margin:10px 2px 5px}.ddsec.first{margin-top:2px}
 .ddrow{display:flex;align-items:center;gap:8px;padding:6px 2px;font-size:13px;cursor:pointer}
 .ddrow input{width:16px;height:16px;cursor:pointer;accent-color:#f59f00}
+.ddlegend{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--ink);max-width:230px}
+.ddlegend>span{display:flex;align-items:center}
 #wrap{margin:0 14px 30px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 #chart{position:relative;overflow-x:auto;overflow-y:hidden;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 #chart::-webkit-scrollbar{height:0}
@@ -145,6 +147,8 @@ header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
   <div class=ddmenu id=viewMenu>
    <div class="ddsec first">COLOR BARS BY</div>
    <div class=seg id=colorSeg><button data-m=type class=on>program</button><button data-m=cost>cost</button></div>
+   <div class=ddsec>WHAT THE COLORS MEAN</div>
+   <div id=legendMenu class=ddlegend></div>
   </div>
  </div>
  <div class=dd>
@@ -283,7 +287,7 @@ function render(){
  const ex=rows.filter(r=>r.status=='extra').length,fr=rows.filter(r=>r.status=='free').length,ac=rows.filter(r=>r.ai).length;
  document.getElementById('cnt').textContent=rows.length+' sessions · '+DAYS[day]+', 2026 — '+ex+' with an additional fee, '+fr+' free/ticketed, '+(rows.length-ex-fr)+' included in full pass · ★ '+ac+' AI sessions';
  const lg=mode=='type'?['Keynotes & Architalks','Seminars','Workshops','Symposia','Tours','Expo credit','Events'].map(k=>[k,TYPE[k]]):Object.values(COST);
- document.getElementById('legend').innerHTML=lg.map(([k,v])=>'<span><span class=sw style="background:'+v+'"></span>'+k+'</span>').join('')+'<span><span class=sw style="background:#fff;outline:2px solid #111827;outline-offset:-2px"></span>★ AI</span><span><span class=sw style="background:#fff;outline:3px solid #f59f00;outline-offset:-2px"></span>✓ selected</span>';
+ const legHTML=lg.map(([k,v])=>'<span><span class=sw style="background:'+v+'"></span>'+k+'</span>').join('')+'<span><span class=sw style="background:#fff;outline:2px solid #111827;outline-offset:-2px"></span>★ AI</span><span><span class=sw style="background:#fff;outline:3px solid #f59f00;outline-offset:-2px"></span>✓ selected</span>';document.getElementById('legend').innerHTML=legHTML;const _lm=document.getElementById('legendMenu');if(_lm)_lm.innerHTML=legHTML;
  updateHScroll();
 }
 function money(f){const m=/\$([\d,]+)/.exec(f||'');return m?parseInt(m[1].replace(/,/g,'')):0}
