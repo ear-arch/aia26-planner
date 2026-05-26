@@ -441,6 +441,10 @@ window.addEventListener('resize',()=>updateHScroll());
 render();drawList();updateCounts();
 (function(){try{fetch('https://abacus.jasoncameron.dev/hit/aia26planner-ear/home').then(r=>r.json()).then(d=>{if(d&&typeof d.value==='number'){var el=document.getElementById('viewcount');el.textContent='\uD83D\uDC41 '+d.value.toLocaleString()+' visits';el.style.display='block';}}).catch(function(){});}catch(e){}})();
 </script>
-<!-- Vercel Web Analytics (activates once enabled in the Vercel project dashboard) -->
+<!-- Vercel Analytics (activates once enabled in the Vercel project dashboard) -->
 <script defer src="/_vercel/insights/script.js"></script>
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/analytics/script.js"></script>
 </body></html>
