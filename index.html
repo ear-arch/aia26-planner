@@ -58,6 +58,7 @@ header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
 #tip .k{color:#9ca3af}#tip .go{color:#ffd8a8}
 @media (hover:none){#tip{display:none!important}}
 .cnt{font-size:12px;color:var(--mut);padding:8px 22px 0}
+.vc{padding:0 22px 6px;font-size:11px;color:var(--mut);display:none}
 #drawer{position:fixed;top:0;right:0;width:380px;max-width:92vw;height:100%;background:#fff;border-left:1px solid var(--line);box-shadow:-8px 0 30px rgba(0,0,0,.12);transform:translateX(100%);transition:transform .2s;z-index:70;display:flex;flex-direction:column}
 #drawer.open{transform:none}
 .dh{padding:14px 16px;border-bottom:1px solid var(--line);position:relative}
@@ -131,7 +132,8 @@ header{padding:16px 22px 4px}h1{margin:0 0 2px;font-size:20px}
 @media print{.controls,.fab,#drawer,.topnav,.vbar,#myExport,#hscroll{display:none}}
 </style></head><body>
 <header><h1>AIA26 PLANNER (by EAR)</h1>
-<div class=sub>Plan your days, build a schedule, &amp; locate your session.</div></header>
+<div class=sub>Plan your days, build a schedule, &amp; locate your session.</div>
+<div class=vc id=viewcount></div></header>
 <div class=topnav>
   <button class=on data-view=planner>CONF SCHED</button>
   <button data-view=myg>MY SCHED</button>
@@ -437,4 +439,8 @@ chart.addEventListener('scroll',()=>{rulerInner.style.transform='translateX('+(-
 hs.addEventListener('scroll',()=>{if(_hsync)return;_hsync=true;chart.scrollLeft=hs.scrollLeft;_hsync=false;});
 window.addEventListener('resize',()=>updateHScroll());
 render();drawList();updateCounts();
-</script></body></html>
+(function(){try{fetch('https://abacus.jasoncameron.dev/hit/aia26planner-ear/home').then(r=>r.json()).then(d=>{if(d&&typeof d.value==='number'){var el=document.getElementById('viewcount');el.textContent='\uD83D\uDC41 '+d.value.toLocaleString()+' visits';el.style.display='block';}}).catch(function(){});}catch(e){}})();
+</script>
+<!-- Vercel Web Analytics (activates once enabled in the Vercel project dashboard) -->
+<script defer src="/_vercel/insights/script.js"></script>
+</body></html>
